@@ -1,9 +1,8 @@
 import java.util.Objects;
 
-// Реализует Comparable для сортировки
 public class Question implements Comparable<Question> {
-    private String text;
-    private int marks;
+    private final String text;
+    private final int marks;
 
     public Question(String text, int marks) {
         this.text = text;
@@ -13,7 +12,7 @@ public class Question implements Comparable<Question> {
     public String getText() { return text; }
     public int getMarks() { return marks; }
 
-    // Логика сортировки (по баллам)
+    // Сортировка от меньшего к большему
     @Override
     public int compareTo(Question other) {
         return Integer.compare(this.marks, other.marks);
@@ -21,7 +20,8 @@ public class Question implements Comparable<Question> {
 
     @Override
     public String toString() {
-        return String.format("Question: [%-20s] | Marks: %d", text, marks);
+        // Красивое форматирование таблицы
+        return String.format("| %-30s | %3d pts |", text, marks);
     }
 
     @Override

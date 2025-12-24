@@ -1,25 +1,22 @@
 import java.util.Objects;
 
-// Абстрактный родительский класс
 public abstract class Person {
-    protected String name;
-    protected int age;
+    // final убирает warning-и: имя и возраст не меняются после рождения
+    protected final String name;
+    protected final int age;
 
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    // Абстрактный метод (должен быть реализован в наследниках)
     public abstract void displayRole();
 
     @Override
     public String toString() {
-        return "Person{name='" + name + "', age=" + age + "}";
+        return "Person: " + name + " (" + age + ")";
     }
 
     @Override

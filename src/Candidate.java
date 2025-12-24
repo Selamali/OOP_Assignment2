@@ -1,46 +1,40 @@
 import java.util.Objects;
 
-// Класс наследник (Inheritance)
 public class Candidate extends Person {
     private boolean isOnline;
 
     public Candidate(String name, int age, boolean isOnline) {
-        super(name, age); // Вызов конструктора родителя
+        super(name, age);
         this.isOnline = isOnline;
     }
 
     // --- Static Polymorphism (Overloading) ---
-
-    // Перегрузка: аргумент boolean
     public void updateStatus(boolean status) {
         this.isOnline = status;
-        System.out.println(">> Status updated (bool): " + isOnline);
+        System.out.println(">> [Log] Status set to boolean: " + isOnline);
     }
 
-    // Перегрузка: аргумент String
     public void updateStatus(String statusText) {
         this.isOnline = statusText.equalsIgnoreCase("ONLINE");
-        System.out.println(">> Status updated (String): " + isOnline);
+        System.out.println(">> [Log] Status set from String: " + isOnline);
     }
 
     // --- Dynamic Polymorphism (Overriding) ---
-
-    // Переопределение метода родителя
     @Override
     public void displayRole() {
-        System.out.println(">> Role: Candidate (Student)");
+        System.out.println(">> Role: Student Candidate");
     }
 
     @Override
     public String toString() {
-        return "Candidate: " + name + " (" + age + ") | Online: " + isOnline;
+        return String.format("Candidate: %s | Age: %d | Online: %b", name, age, isOnline);
     }
 
     @Override
     public boolean equals(Object o) {
         if (!super.equals(o)) return false;
-        Candidate c = (Candidate) o;
-        return isOnline == c.isOnline;
+        Candidate that = (Candidate) o;
+        return isOnline == that.isOnline;
     }
 
     @Override
