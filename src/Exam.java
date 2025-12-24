@@ -1,6 +1,6 @@
 public class Exam {
-    private String subject;
-    private double duration;
+    private final String subject;
+    private final double duration;
 
     public Exam(String subject, double duration) {
         this.subject = subject;
@@ -9,6 +9,6 @@ public class Exam {
 
     @Override
     public String toString() {
-        return "Exam: " + subject + " (" + duration + " min)";
+        return "Exam: " + subject + " [" + duration + " min]";
     }
 }
