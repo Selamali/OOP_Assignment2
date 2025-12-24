@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-// Класс-наследник (Inheritance)
+// Класс наследник (Inheritance)
 public class Candidate extends Person {
     private boolean isOnline;
 
