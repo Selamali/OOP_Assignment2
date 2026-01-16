@@ -1,79 +1,79 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Question> pool = new ArrayList<>();
+        DatabaseHandler db = new DatabaseHandler();
 
         System.out.println("=========================================");
-        System.out.println("       EXAM MANAGEMENT SYSTEM v2.0       ");
+        System.out.println("  Online Examination System 3.0  ");
         System.out.println("=========================================");
 
-        // --- 1. Ввод вопросов ---
-        System.out.print(">> Enter number of questions to add: ");
-        int count = scanner.nextInt();
-        scanner.nextLine(); // Fix buffer
+        try {
+            // 1. Проверка соединения
+            db.getConnection().close();
+            System.out.println(">> [System] Database connected successfully.");
 
-        for (int i = 0; i < count; i++) {
-            System.out.println("\n--- Adding Question " + (i + 1) + " ---");
-            System.out.print("Text: ");
-            String text = scanner.nextLine();
-            System.out.print("Marks: ");
-            int marks = scanner.nextInt();
-            scanner.nextLine();
+            // 2. Ввод новых вопросов в базу
+            System.out.print("\nEnter number of questions to add: ");
+            int count = Integer.parseInt(scanner.nextLine());
 
-            pool.add(new Question(text, marks));
-        }
+            for (int i = 0; i < count; i++) {
+                System.out.println("\n--- Entry #" + (i + 1) + " ---");
+                System.out.print("Enter question text: ");
+                String text = scanner.nextLine();
+                System.out.print("Enter marks: ");
+                int marks = Integer.parseInt(scanner.nextLine());
 
-        // --- 2. Сортировка ---
-        System.out.println("\n-----------------------------------------");
-        System.out.print(">> Sort questions by difficulty? (y/n): ");
-        String choice = scanner.nextLine();
-
-        if (choice.equalsIgnoreCase("y")) {
-            Collections.sort(pool);
-            System.out.println(">> [SUCCESS] List sorted!");
-        }
-
-        System.out.println("\n[ CURRENT QUESTION POOL ]");
-        for (Question q : pool) {
-            System.out.println(q);
-        }
-
-        // --- 3. Интерактивный поиск (НОВОЕ!) ---
-        System.out.println("\n-----------------------------------------");
-        System.out.print(">> Enter keyword to SEARCH (e.g. Java): ");
-        String keyword = scanner.nextLine();
-
-        System.out.println("[ SEARCH RESULTS ]");
-        boolean found = false;
-        for (Question q : pool) {
-            if (q.getText().toLowerCase().contains(keyword.toLowerCase())) {
-                System.out.println(q);
-                found = true;
+                db.addQuestion(new Question(text, marks));
             }
+
+            // 3. Получение данных из БД
+            System.out.println("\n--- Synchronizing with PostgreSQL ---");
+            List<Question> questionsFromDB = db.getQuestions();
+
+            if (questionsFromDB.isEmpty()) {
+                System.out.println(">> [System] The database is currently empty.");
+            } else {
+                // --- ВОТ ЭТОТ БЛОК МЫ ВЕРНУЛИ ---
+                System.out.print("\n>> Would you like to sort questions by marks? (y/n): ");
+                String choice = scanner.nextLine();
+
+                if (choice.equalsIgnoreCase("y")) {
+                    Collections.sort(questionsFromDB); // Использует твой Comparable в Question
+                    System.out.println(">> [Success] List sorted by difficulty.");
+                }
+
+                System.out.println("\n[ QUESTION POOL ]");
+                for (Question q : questionsFromDB) {
+                    System.out.println(q);
+                }
+                // --------------------------------
+            }
+
+            // 4. Демонстрация Полиморфизма (обязательное требование)
+            System.out.println("\n-----------------------------------------");
+            System.out.println(">> Checking Candidate Profile (Polymorphism)...");
+            Person student = new Candidate("Ramazan", 18, true);
+            System.out.println(student);
+            student.displayRole(); // Override
+
+        } catch (NumberFormatException e) {
+            // Если ввели текст вместо числа
+            System.err.println(">> [Input Error] Invalid number format. Please try again.");
+        } catch (SQLException e) {
+            // Если упала база или не подключен Driver
+            System.err.println(">> [Database Error] Connection failed. Check your JAR driver and URL.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            // Все остальные ошибки
+            System.err.println(">> [Critical Error] Something went wrong: " + e.getMessage());
+        } finally {
+            System.out.println("\n=========================================");
+            System.out.println("        APPLICATION TERMINATED           ");
+            System.out.println("=========================================");
+            scanner.close();
         }
-        if (!found) System.out.println("No questions found.");
-
-        // --- 4. Полиморфизм ---
-        System.out.println("\n-----------------------------------------");
-        System.out.println(">> Generating Candidate Profile...");
-
-        // Полиморфизм: Person -> Candidate
-        Person student = new Candidate("Alex Doe", 21, true);
-        System.out.println(student);
-        student.displayRole(); // Override check
-
-        System.out.println("\n>> Updating Status (Overloading Check)...");
-        Candidate c = (Candidate) student;
-        c.updateStatus(false);       // boolean
-        c.updateStatus("ONLINE");    // String
-
-        System.out.println("\n=========================================");
-        System.out.println("           SYSTEM SHUTDOWN               ");
-        scanner.close();
     }
 }
