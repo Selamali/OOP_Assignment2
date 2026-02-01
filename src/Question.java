@@ -1,18 +1,20 @@
 import java.util.Objects;
 
 public class Question implements Comparable<Question> {
+    private final int id; // Первичный ключ
     private final String text;
     private final int marks;
 
-    public Question(String text, int marks) {
+    public Question(int id, String text, int marks) {
+        this.id = id;
         this.text = text;
         this.marks = marks;
     }
 
+    public int getId() { return id; }
     public String getText() { return text; }
     public int getMarks() { return marks; }
 
-    // Сортировка от меньшего к большему
     @Override
     public int compareTo(Question other) {
         return Integer.compare(this.marks, other.marks);
@@ -20,8 +22,8 @@ public class Question implements Comparable<Question> {
 
     @Override
     public String toString() {
-        // Красивое форматирование таблицы
-        return String.format("| %-30s | %3d pts |", text, marks);
+        // Вывод с индексом
+        return String.format("[%d] | %-30s | %3d pts |", id, text, marks);
     }
 
     @Override
@@ -29,11 +31,11 @@ public class Question implements Comparable<Question> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question q = (Question) o;
-        return marks == q.marks && Objects.equals(text, q.text);
+        return id == q.id && marks == q.marks && Objects.equals(text, q.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, marks);
+        return Objects.hash(id, text, marks);
     }
 }

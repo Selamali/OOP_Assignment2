@@ -1,7 +1,6 @@
 import java.util.Objects;
 
 public abstract class Person {
-    // final убирает warning-и: имя и возраст не меняются после рождения
     protected final String name;
     protected final int age;
 
@@ -9,8 +8,6 @@ public abstract class Person {
         this.name = name;
         this.age = age;
     }
-
-    public String getName() { return name; }
 
     public abstract void displayRole();
 
