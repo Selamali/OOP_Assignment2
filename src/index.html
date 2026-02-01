@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0d9488;
+            --primary-hover: #0f766e;
+            --bg-color: #f9fafb;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-color: #f3f4f6;
+            --danger-color: #ef4444;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--text-main) !important;
+            font-size: 1.15rem;
+            letter-spacing: -0.025em;
+            cursor: default;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            color: var(--primary-color) !important;
+            margin-right: 0.75rem;
+        }
+        .version-tag {
+            font-size: 0.7rem;
+            background: #f3f4f6;
+            color: var(--text-muted);
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-left: 10px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            background: white;
+            overflow: hidden;
+        }
+        .card-header {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+            outline: none;
+        }
+        .form-label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .input-group-text { background: #f9fafb; border-color: #e5e7eb; color: var(--text-muted); }
+
+        /* Validation */
+        .input-group > .form-control.is-invalid { z-index: 2; border-color: var(--danger-color); }
+        .input-group + .invalid-feedback { display: none; }
+        .invalid-feedback-custom { display: none; width: 100%; margin-top: 0.4rem; font-size: 0.85em; color: var(--danger-color); }
+        .is-invalid ~ .invalid-feedback-custom { display: block; }
+
+        /* Buttons */
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn:focus, .btn:active { outline: none; box-shadow: none; } /* Убрал любые стандартные рамки */
+
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover, .btn-primary:active { background: var(--primary-hover) !important; transform: translateY(-1px); }
+
+        .btn-secondary-light { background: #f3f4f6; color: var(--text-muted); }
+        .btn-secondary-light:hover { background: #e5e7eb; color: var(--text-main); }
+        .btn-loading { opacity: 0.7; pointer-events: none; }
+
+        /* Table */
+        .table thead th {
+            background: #fff;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem;
+            cursor: pointer;
+            user-select: none;
+            vertical-align: middle;
+        }
+        /* УБРАЛ СВЕЧЕНИЕ (Outline) при клике */
+        .table thead th:focus, .table thead th:active { outline: none; box-shadow: none; }
+        .table thead th:last-child { cursor: default; pointer-events: none; }
+
+        .table tbody td {
+            vertical-align: middle;
+            color: var(--text-main);
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .table-hover tbody tr:hover { background-color: #fafafa; }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: #fff;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Badges */
+        .badge-points { background: #f3f4f6; color: var(--text-main); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge-count { background: var(--primary-color); color: white; font-weight: 600; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+
+        /* Action Buttons - УБРАЛ ВСЕ РАМКИ */
+        .btn-icon {
+            width: 34px; height: 34px;
+            padding: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: #9ca3af;
+            background: transparent;
+            border: none !important; /* ВАЖНО: Убрал рамку совсем */
+            outline: none !important;
+        }
+        .btn-icon:focus { box-shadow: none; } /* Убрал фокус при нажатии */
+        .btn-icon:hover { background: #f3f4f6; }
+        .btn-edit:hover { color: #d97706; background: #fffbeb; }
+        .btn-delete:hover { color: #ef4444; background: #fef2f2; }
+
+        /* Animation */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal */
+        .modal-content { border: none; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal-header { border-bottom: 1px solid #f3f4f6; padding: 1.5rem; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 1.25rem 1.5rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top mb-5">
+    <div class="container">
+            <span class="navbar-brand">
+                <i class="bi bi-mortarboard-fill logo-icon"></i>
+                Online Examination System
+                <span class="version-tag">v4.0</span>
+            </span>
+        <button class="btn btn-sm text-muted" onclick="exportToCSV()" type="button">
+            <i class="bi bi-download me-2"></i>Export CSV
+        </button>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header">New Question</div>
+                <div class="card-body p-4">
+                    <form id="addForm" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="qText">Question Text</label>
+                            <textarea id="qText" class="form-control" rows="6" placeholder="Type your question here..." required style="resize: none;"></textarea>
+                            <div class="invalid-feedback">Required field.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="qMarks">Points</label>
+                            <div class="input-group has-validation">
+                                <input type="number" id="qMarks" class="form-control" placeholder="10" min="1" max="100" required>
+                                <div class="invalid-feedback-custom">Range: 1-100.</div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: #f3f4f6;">
+                        <button type="submit" class="btn btn-primary w-100" id="btnSave">
+                            Add Question
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center bg-white border-0 pb-0 pt-4 px-4">
+                    <h5 class="mb-0 fw-bold text-dark">Question Bank</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="input-group input-group-sm" style="width: 220px;">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control bg-light border-0" placeholder="Search questions...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 mt-2">
+                    <div class="d-flex gap-4 text-muted small border-bottom pb-3" style="border-color: #f3f4f6 !important;">
+                        <span>Total: <strong class="text-dark" id="countBadge">0</strong></span>
+                        <span>Points Sum: <strong class="text-dark" id="totalPoints">0</strong></span>
+                        <span>Avg Score: <strong class="text-dark" id="avgScore">0</strong></span>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                            <tr>
+                                <th class="ps-4" width="10%" onclick="sortData('id')">ID</th>
+                                <th width="55%" onclick="sortData('text')">Question</th>
+                                <th width="15%" onclick="sortData('marks')">Points</th>
+                                <th class="text-end pe-4" width="20%">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="emptyState" class="text-center py-5 d-none">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-inbox text-muted" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <p class="text-muted small fw-medium" id="emptyStateText">No items found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Edit Question</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-3">
+                    <label class="form-label">Question Text</label>
+                    <textarea id="editText" class="form-control" rows="4"></textarea>
+                    <div class="invalid-feedback d-block invalid-feedback-custom" id="editErrorText" style="display:none;">Required.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Points</label>
+                    <input type="number" id="editMarks" class="form-control" min="1" max="100">
+                    <div class="invalid-feedback d-block invalid-feedback-custom" id="editErrorMarks" style="display:none;">Range 1-100.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveEdit()" id="btnUpdate">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content text-center pt-4 pb-3">
+            <div class="modal-body px-4">
+                <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-trash3 text-danger fs-4"></i>
+                </div>
+                <h5 class="mb-2 fw-bold">Delete Item?</h5>
+                <p class="text-muted small mb-0">This action cannot be undone.</p>
+                <input type="hidden" id="deleteId">
+            </div>
+            <div class="modal-footer justify-content-center border-0 pt-2 pb-2">
+                <button type="button" class="btn btn-secondary-light w-100 mb-2" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger w-100 btn" onclick="confirmDelete()" id="btnConfirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-4">
+    <div id="successToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success me-2 fs-5"></i>
+                <span id="successMsg" class="fw-medium">Success</span>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    <div id="errorToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center">
+                <i class="bi bi-x-circle-fill text-danger me-2 fs-5"></i>
+                <span id="errorMsg" class="fw-medium">Error</span>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "/questions";
+    let questionsData = [];
+    let currentSort = { field: 'id', dir: 'asc' };
+    let searchQuery = "";
+
+    let editModal, deleteModal, successToast, errorToast;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        successToast = new bootstrap.Toast(document.getElementById('successToast'));
+        errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+
+        document.getElementById('addForm').addEventListener('submit', handleAdd);
+
+        document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            applyFilterAndSort();
+        }, 300));
+
+        ['qText', 'qMarks'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() { this.classList.remove('is-invalid'); });
+        });
+        ['editText', 'editMarks'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+                this.nextElementSibling.style.display = 'none';
+            });
+        });
+
+        loadQuestions();
+    });
+
+    async function loadQuestions() {
+        setLoading(true);
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error("Server error");
+            questionsData = await response.json();
+            applyFilterAndSort();
+        } catch (e) {
+            showError("Connection failed");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function applyFilterAndSort() {
+        let filtered = questionsData.filter(q =>
+            q.text.toLowerCase().includes(searchQuery) ||
+            q.id.toString().includes(searchQuery)
+        );
+
+        filtered.sort((a, b) => {
+            let valA = a[currentSort.field];
+            let valB = b[currentSort.field];
+            if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+            if (valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+            if (valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        updateStats(filtered);
+        renderTable(filtered);
+    }
+
+    function sortData(field) {
+        if (currentSort.field === field) {
+            currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.field = field;
+            currentSort.dir = 'asc';
+        }
+        applyFilterAndSort();
+    }
+
+    function updateStats(data) {
+        const total = data.reduce((sum, q) => sum + q.marks, 0);
+        const avg = data.length ? (total / data.length).toFixed(1) : 0;
+        document.getElementById('totalPoints').textContent = total;
+        document.getElementById('avgScore').textContent = avg;
+        document.getElementById('countBadge').textContent = data.length;
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById("tableBody");
+        const emptyState = document.getElementById("emptyState");
+        const emptyText = document.getElementById("emptyStateText");
+
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+            emptyState.classList.remove("d-none");
+            emptyText.textContent = questionsData.length === 0 ? "Database is empty" : "No matches found";
+        } else {
+            emptyState.classList.add("d-none");
+
+            data.forEach(q => {
+                const tr = document.createElement('tr');
+                tr.className = "fade-in";
+
+                const tdId = document.createElement('td');
+                tdId.className = "ps-4 text-muted small";
+                tdId.textContent = `#${q.id}`;
+                tr.appendChild(tdId);
+
+                const tdText = document.createElement('td');
+                tdText.className = "fw-medium";
+                tdText.style.color = "#1f2937";
+                tdText.textContent = q.text;
+                tr.appendChild(tdText);
+
+                const tdMarks = document.createElement('td');
+                const spanMarks = document.createElement('span');
+                spanMarks.className = "badge-points";
+                spanMarks.textContent = `${q.marks}`;
+                tdMarks.appendChild(spanMarks);
+                tr.appendChild(tdMarks);
+
+                const tdActions = document.createElement('td');
+                tdActions.className = "text-end pe-4";
+
+                const divActions = document.createElement('div');
+                divActions.className = "d-inline-flex gap-2";
+
+                const btnEdit = createButton('edit', () => openEditModal(q.id));
+                const btnDelete = createButton('delete', () => openDeleteModal(q.id));
+
+                divActions.appendChild(btnEdit);
+                divActions.appendChild(btnDelete);
+                tdActions.appendChild(divActions);
+                tr.appendChild(tdActions);
+
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function createButton(type, onClick) {
+        const btn = document.createElement('button');
+        btn.type = "button";
+        btn.onclick = onClick;
+        btn.className = `btn-icon btn-${type}`;
+        btn.title = type.charAt(0).toUpperCase() + type.slice(1);
+        btn.innerHTML = type === 'edit' ? '<i class="bi bi-pencil-fill"></i>' : '<i class="bi bi-trash-fill"></i>';
+        return btn;
+    }
+
+    async function handleAdd(e) {
+        e.preventDefault();
+        const textInput = document.getElementById("qText");
+        const marksInput = document.getElementById("qMarks");
+        const btn = document.getElementById("btnSave");
+
+        const text = textInput.value.trim();
+        const marks = parseInt(marksInput.value, 10);
+
+        let isValid = true;
+        if (!text) { textInput.classList.add("is-invalid"); isValid = false; }
+        if (isNaN(marks) || marks < 1 || marks > 100) { marksInput.classList.add("is-invalid"); isValid = false; }
+
+        if (!isValid) return;
+
+        setButtonLoading(btn, true, "Adding...");
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text, marks })
+            });
+
+            if (res.ok) {
+                textInput.value = "";
+                marksInput.value = "";
+                showSuccess("Question Added");
+                loadQuestions();
+            } else { showError("Failed to save"); }
+        } catch (err) { showError("Network error"); }
+        finally { setButtonLoading(btn, false, "Add Question"); }
+    }
+
+    async function saveEdit() {
+        const id = document.getElementById("editId").value;
+        const textInput = document.getElementById("editText");
+        const marksInput = document.getElementById("editMarks");
+        const btn = document.getElementById("btnUpdate");
+
+        const text = textInput.value.trim();
+        const marks = parseInt(marksInput.value, 10);
+
+        let isValid = true;
+        if(!text) {
+            textInput.classList.add('is-invalid');
+            document.getElementById('editErrorText').style.display = 'block';
+            isValid = false;
+        }
+        if(isNaN(marks) || marks < 1 || marks > 100) {
+            marksInput.classList.add('is-invalid');
+            document.getElementById('editErrorMarks').style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        setButtonLoading(btn, true, "Saving...");
+        try {
+            const res = await fetch(API_URL, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: parseInt(id), text, marks })
+            });
+
+            if(res.ok) {
+                editModal.hide();
+                showSuccess("Updated successfully");
+                loadQuestions();
+            } else { showError("Update failed"); }
+        } catch(e) { showError("Network error"); }
+        finally { setButtonLoading(btn, false, "Save Changes"); }
+    }
+
+    async function confirmDelete() {
+        const id = document.getElementById("deleteId").value;
+        const btn = document.getElementById("btnConfirmDelete");
+
+        setButtonLoading(btn, true, "Deleting...");
+        try {
+            const res = await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
+            if(res.ok) {
+                deleteModal.hide();
+                showSuccess("Deleted successfully");
+                loadQuestions();
+            } else { showError("Delete failed"); }
+        } catch(e) { showError("Network error"); }
+        finally { setButtonLoading(btn, false, "Delete"); }
+    }
+
+    function exportToCSV() {
+        if (questionsData.length === 0) return showError("No data to export");
+        let csv = "ID,Question,Points\n";
+        questionsData.forEach(q => {
+            const safeText = `"${q.text.replace(/"/g, '""')}"`;
+            csv += `${q.id},${safeText},${q.marks}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'questions_export.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    function openEditModal(id) {
+        const q = questionsData.find(item => item.id === id);
+        if(!q) return;
+        document.getElementById("editId").value = q.id;
+        document.getElementById("editText").value = q.text;
+        document.getElementById("editMarks").value = q.marks;
+        document.getElementById("editText").classList.remove('is-invalid');
+        document.getElementById("editMarks").classList.remove('is-invalid');
+        document.querySelectorAll('.invalid-feedback-custom').forEach(el => el.style.display = 'none');
+        editModal.show();
+    }
+
+    function openDeleteModal(id) {
+        document.getElementById("deleteId").value = id;
+        deleteModal.show();
+    }
+
+    function setLoading(isLoading) {
+        const tbody = document.getElementById("tableBody");
+        if(isLoading) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5"><div class="spinner-border text-primary" style="opacity:0.5" role="status"></div></td></tr>`;
+        }
+    }
+
+    function setButtonLoading(btn, isLoading, text) {
+        if (isLoading) {
+            btn.dataset.originalText = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${text}`;
+            btn.classList.add('btn-loading');
+        } else {
+            btn.innerHTML = btn.dataset.originalText || text;
+            btn.classList.remove('btn-loading');
+        }
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    function showSuccess(msg) {
+        document.getElementById("successMsg").textContent = msg;
+        successToast.show();
+    }
+
+    function showError(msg) {
+        document.getElementById("errorMsg").textContent = msg;
+        errorToast.show();
+    }
+</script>
+</body>
+</html>

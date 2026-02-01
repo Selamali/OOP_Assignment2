@@ -1,10 +1,16 @@
 import java.util.Objects;
 
 public class Question implements Comparable<Question> {
-    private final int id; // Первичный ключ
-    private final String text;
-    private final int marks;
+    // УБРАЛИ final, чтобы Gson мог записывать сюда данные
+    private int id;
+    private String text;
+    private int marks;
 
+    // ОБЯЗАТЕЛЬНО: Пустой конструктор для Gson
+    public Question() {
+    }
+
+    // Обычный конструктор
     public Question(int id, String text, int marks) {
         this.id = id;
         this.text = text;
@@ -15,6 +21,11 @@ public class Question implements Comparable<Question> {
     public String getText() { return text; }
     public int getMarks() { return marks; }
 
+    // Сеттеры (нужны для Gson, если он не использует рефлексию напрямую)
+    public void setId(int id) { this.id = id; }
+    public void setText(String text) { this.text = text; }
+    public void setMarks(int marks) { this.marks = marks; }
+
     @Override
     public int compareTo(Question other) {
         return Integer.compare(this.marks, other.marks);
@@ -22,7 +33,6 @@ public class Question implements Comparable<Question> {
 
     @Override
     public String toString() {
-        // Вывод с индексом
         return String.format("[%d] | %-30s | %3d pts |", id, text, marks);
     }
 
