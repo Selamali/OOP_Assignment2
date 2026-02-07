@@ -7,9 +7,9 @@ import java.sql.SQLException;
 // ВАЖНО: implements IDBConnection
 public class PostgresDBConnection implements IDBConnection {
 
-    private final String url = "jdbc:postgresql://localhost:5432/postgres";
-    private final String user = "ramazananarbekov";
-    private final String password = "12345";
+    private final String url = "---";
+    private final String user = "---";
+    private final String password = "---";
 
     @Override
     public Connection getConnection() throws SQLException {
